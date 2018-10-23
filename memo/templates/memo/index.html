@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+
+{% block title %}home.html{% endblock %}
+
+
+{% block extrascript %}
+        <script>
+            $(document).ready(function(){
+
+                $("td.compt-time select").change(function(){
+
+                    var params = {};
+                    var stage_id = $(this).parent().prev().prev().prev().text();
+                    var stage_no = $(this).parent().prev().prev().text();
+                    var compt_time = $(this).val();
+
+                    params.stage_id = stage_id;
+                    params.stage_no = stage_no;
+                    params.compt_time = compt_time;
+                    params.csrfmiddlewaretoken = '{{ csrf_token }}';
+
+                    $.ajax({
+                        "type": "POST",
+                        "dataType": "json",
+                        "async": false,
+                        "contentType": "application/x-www-form-urlencoded; charset=UTF-8",
+                        "url": stage_id+"/update/",
+                        "data": params,
+                        "success": function(result) {
+
+                            if(result.isSuccess){
+
+                                alert(result.message);
+
+                            } else {
+
+                                alert('500 error');
+                            }
+                            return;
+                        }
+                        ,error: function(xhr, status, error){
+
+                            alert(error);
+                            return;
+                        }
+                    });
+                });
+            });
+        </script>
+{% endblock %}
+
+
+{% block header %}<h1>block header</h1>{% endblock %}
+
+
+{% block content %}
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th style="display:none">pk</th>
+                                <th>Stage</th>
+                                <th>Type</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% if stage_list %}
+                        {% for stage in stage_list %}
+                            <tr>
+                                <td style="display:none">{{ stage.id }}</td>
+                                <td><a href="/memo/{{stage.id}}">{{ stage.stage_no }}</a></td>
+                                <td>{{ stage.compt_se|default:"normal" }}</td>
+                                <td class="compt-time">
+                                    <select>
+                                        <option>{{ stage.compt_time|default:"0" }}</option>
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% else %}
+                            <tr>no list</tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+{% endblock %}
+
+
+{% block footer %}<h1>block footer</h1>{% endblock %}
