@@ -121,5 +121,7 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
+# pyCharm
+.idea
 
 # End of https://www.gitignore.io/api/django
